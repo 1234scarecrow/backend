@@ -59,6 +59,8 @@ app.get('/note', (req, res, next) => {
     output.code = 200;
     output.msg = 'query note sucess';
     output.data = result;
+    console.log("拿到的数据")
+    console.log(result)
     res.send(output);
   })
 })
@@ -85,9 +87,24 @@ app.get('/mood', (req, res, next) => {
     console.log('调用了 /mood');
     if (err) next(err);
     output.code = 200;
-    output.msg = 'query mood sucess';
+    output.msg = 'query mood sucsess';
     output.data = result;
     res.send(output);
+  })
+})
+
+// 查询笔记
+app.get('/note/:id',(req,res,next)=>{
+    console.log("查询笔记内容");
+  let id=req.params.id;
+  let output={};
+  let sql='SELECT * FROM note WHERE nid=?'
+  pool.query(sql,[id],(err,result)=>{
+    if(err) next(err);
+    output.code=200;
+    output.msg='query note success'
+    output.data=result[0]
+    res.send(output)
   })
 })
 
@@ -132,6 +149,9 @@ app.post('/addnote', (req, res, next) => {
 app.post('/addmood', (req, res, next) => {
   let output = {};
   let content = req.body.content;
+  // console.log(req)
+  console.log(req.body.content);
+  console.log(req.body.mdate);
   if (!content) {
     output.code = 401;
     output.msg = "content required";
@@ -155,4 +175,30 @@ app.post('/addmood', (req, res, next) => {
       return
     }
   })
+})
+
+// 添加收藏的post请求
+app.post('/addcollect',(req,res,next)=>{
+  let output={}
+  let title=req.body.title;
+  console.log(req.body.title);
+  if(!title){
+    output.code=401;
+    output.msg="title required";
+    res.send(output);
+    return
+  }
+  let curl=req.body.curl;
+  let intr=req.body.intr;
+  let sql='INSERT INTO collect Values(NULL,?,?,?)';
+  pool.query(sql,[title,curl,intr],(err,result)=>{
+    if(err) next(err);
+    if(result.affectedRows>0){
+      output.code=200;
+      output.msg="add collect success";
+      res.send(output);
+      return
+    }
+  })
+
 })
