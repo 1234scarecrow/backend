@@ -3,10 +3,10 @@ const mysql = require('mysql')
 
 // 创建连接池
 let pool = mysql.createPool({
-  host: '127.0.0.1',
+  host: 'localhost',
   port: '3306',
   user: 'root',
-  pwd: '',
+  pwd: 'root',
   database: 'blog',
   connectionLimit: 5
 })
