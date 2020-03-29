@@ -18,7 +18,7 @@ app.listen(port, () => {
 // 添加请求处理中间件
 // 1. 使用cors中间件 所有的响应消息都添加头部 access-control-allow-origin
 app.use(cors({
-  origin: ['http://127.0.0.1:8081', 'http://192.168.31.200:8081', "http://www.zxfei.info:8081"],
+  origin: ['http://127.0.0.1:8081', 'http://192.168.31.200:8081', "http://www.zxfei.info:8081", "http://45.76.151.126:8081"],
   credentials: true
 }));
 
