@@ -3,7 +3,7 @@ const mysql = require('mysql')
 
 // 创建连接池
 let pool = mysql.createPool({
-  host: '45.76.151.126/',
+  host: '45.76.151.126',
   port: '3306',
   user: 'root',
   pwd: 'root',
