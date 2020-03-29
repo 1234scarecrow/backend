@@ -49,6 +49,14 @@ app.get('/collect', (req, res, next) => {
   })
 })
 
+// 云主机测试接口
+app.get('/test',(req,res,next)=>{
+  let output={};
+  output.code = 200;
+  output.msg="连接成功, 鼓掌!!";
+  res.send(output);
+})
+
 // 笔记
 app.get('/note', (req, res, next) => {
   let output = {};
