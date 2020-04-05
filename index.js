@@ -9,7 +9,7 @@ const pool = require('./pool')
 // module.exports = router
 
 // web服务器监听的端口
-let port = 8080;
+let port = 8081;
 let app = express();
 app.listen(port, () => {
   console.log('Server Listrening on port ' + port)
@@ -18,7 +18,7 @@ app.listen(port, () => {
 // 添加请求处理中间件
 // 1. 使用cors中间件 所有的响应消息都添加头部 access-control-allow-origin
 app.use(cors({
-  origin: ['http://127.0.0.1:8081', 'http://192.168.31.200:8081', "http://www.zxfei.info:8081", "http://45.76.151.126:8081"],
+  origin: ['http://127.0.0.1:8080', 'http://192.168.31.200:8080', "http://www.zxfei.info:8080", "http://45.76.151.126:8080"],
   credentials: true
 }));
 
@@ -103,7 +103,7 @@ app.get('/mood', (req, res, next) => {
 
 // 查询笔记
 app.get('/note/:id',(req,res,next)=>{
-    console.log("查询笔记内容");
+    console.log('查询笔记内容');
   let id=req.params.id;
   let output={};
   let sql='SELECT * FROM note WHERE nid=?'
@@ -112,6 +112,21 @@ app.get('/note/:id',(req,res,next)=>{
     output.code=200;
     output.msg='query note success'
     output.data=result[0]
+    res.send(output)
+  })
+})
+
+// 查询随笔
+app.get('/jotting/:id',(req,res,next)=>{
+  console.log('查询随笔内容')
+  let id=req.params.id;
+  let output={};
+  let sql="SELECT * FROM jotting WHERE jid=?";
+  pool.query(sql,[id],(err,result)=>{
+    if(err) next(err);
+    output.code=200;
+    output.msg='query jotting success';
+    output.data=result[0];
     res.send(output)
   })
 })
