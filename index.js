@@ -50,10 +50,10 @@ app.get('/collect', (req, res, next) => {
 })
 
 // 云主机测试接口
-app.get('/test',(req,res,next)=>{
-  let output={};
+app.get('/test', (req, res, next) => {
+  let output = {};
   output.code = 200;
-  output.msg="连接成功, 鼓掌!!";
+  output.msg = "连接成功, 鼓掌!!";
   res.send(output);
 })
 
@@ -102,31 +102,31 @@ app.get('/mood', (req, res, next) => {
 })
 
 // 查询笔记
-app.get('/note/:id',(req,res,next)=>{
-    console.log('查询笔记内容');
-  let id=req.params.id;
-  let output={};
-  let sql='SELECT * FROM note WHERE nid=?'
-  pool.query(sql,[id],(err,result)=>{
-    if(err) next(err);
-    output.code=200;
-    output.msg='query note success'
-    output.data=result[0]
+app.get('/note/:id', (req, res, next) => {
+  console.log('查询笔记内容');
+  let id = req.params.id;
+  let output = {};
+  let sql = 'SELECT * FROM note WHERE nid=?'
+  pool.query(sql, [id], (err, result) => {
+    if (err) next(err);
+    output.code = 200;
+    output.msg = 'query note success'
+    output.data = result[0]
     res.send(output)
   })
 })
 
 // 查询随笔
-app.get('/jotting/:id',(req,res,next)=>{
+app.get('/jotting/:id', (req, res, next) => {
   console.log('查询随笔内容')
-  let id=req.params.id;
-  let output={};
-  let sql="SELECT * FROM jotting WHERE jid=?";
-  pool.query(sql,[id],(err,result)=>{
-    if(err) next(err);
-    output.code=200;
-    output.msg='query jotting success';
-    output.data=result[0];
+  let id = req.params.id;
+  let output = {};
+  let sql = "SELECT * FROM jotting WHERE jid=?";
+  pool.query(sql, [id], (err, result) => {
+    if (err) next(err);
+    output.code = 200;
+    output.msg = 'query jotting success';
+    output.data = result[0];
     res.send(output)
   })
 })
@@ -168,6 +168,42 @@ app.post('/addnote', (req, res, next) => {
   })
 })
 
+// 写随笔的post请求
+app.post('/addjotting', (req, res, next) => {
+  let output = {}
+  let title = req.body.title;
+  if (!title) {
+    output.code = 401;
+    output.msg = 'title required';
+    res.send(output);
+    return;
+  }
+  let content = req.body.content;
+  if (!content) {
+    output.code = 402;
+    output.msg = 'content required';
+    res.send(output);
+    return;
+  }
+  let pub_time = req.body.pub_time;
+  if (!pub_time) {
+    output.code = 403;
+    output.msg = 'pubtime required';
+    res.send(output);
+    return;
+  }
+  let sql = "INSERT INTO jotting VALUES(NULL,?,?,?)";
+  pool.query(sql, [title, content, pub_time], (err, result) => {
+    if (err) next(err);
+    if (result.affectedRows > 0) {
+      output.code = 200;
+      output.msg = 'add note success'
+      res.send(output);
+      return;
+    }
+  })
+})
+
 //写心情的post请求
 app.post('/addmood', (req, res, next) => {
   let output = {};
@@ -201,24 +237,24 @@ app.post('/addmood', (req, res, next) => {
 })
 
 // 添加收藏的post请求
-app.post('/addcollect',(req,res,next)=>{
-  let output={}
-  let title=req.body.title;
+app.post('/addcollect', (req, res, next) => {
+  let output = {}
+  let title = req.body.title;
   console.log(req.body.title);
-  if(!title){
-    output.code=401;
-    output.msg="title required";
+  if (!title) {
+    output.code = 401;
+    output.msg = "title required";
     res.send(output);
     return
   }
-  let curl=req.body.curl;
-  let intr=req.body.intr;
-  let sql='INSERT INTO collect Values(NULL,?,?,?)';
-  pool.query(sql,[title,curl,intr],(err,result)=>{
-    if(err) next(err);
-    if(result.affectedRows>0){
-      output.code=200;
-      output.msg="add collect success";
+  let curl = req.body.curl;
+  let intr = req.body.intr;
+  let sql = 'INSERT INTO collect Values(NULL,?,?,?)';
+  pool.query(sql, [title, curl, intr], (err, result) => {
+    if (err) next(err);
+    if (result.affectedRows > 0) {
+      output.code = 200;
+      output.msg = "add collect success";
       res.send(output);
       return
     }
