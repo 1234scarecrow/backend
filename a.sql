@@ -1,0 +1,1 @@
+alter table note auto_increment = 1;

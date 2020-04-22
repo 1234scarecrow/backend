@@ -57,6 +57,10 @@ app.get('/test', (req, res, next) => {
   res.send(output);
 })
 
+/**
+ * 展示类get请求接口
+ */
+
 // 笔记
 app.get('/note', (req, res, next) => {
   let output = {};
@@ -131,7 +135,10 @@ app.get('/jotting/:id', (req, res, next) => {
   })
 })
 
-// post请求, 主要是用来写笔记, 加收藏等功能
+/**
+ * 新增类post请求, 新增笔记 / 加收藏 / 写心情等
+ */
+
 // 写笔记的post请求
 app.post('/addnote', (req, res, next) => {
   let output = {};
@@ -243,7 +250,7 @@ app.post('/addcollect', (req, res, next) => {
   console.log(req.body.title);
   if (!title) {
     output.code = 401;
-    output.msg = "title required";
+    output.msg = 'title required';
     res.send(output);
     return
   }
@@ -254,10 +261,65 @@ app.post('/addcollect', (req, res, next) => {
     if (err) next(err);
     if (result.affectedRows > 0) {
       output.code = 200;
-      output.msg = "add collect success";
+      output.msg = 'add collect success';
       res.send(output);
-      return
+      return;
     }
   })
 
+})
+
+/**
+ * 登录(只有一个用户)
+ */
+
+app.get('/login',(req,res,next)=>{
+  console.log('调用了登录接口')
+  
+  let output={}
+  let uname=req.query.uname;
+  console.log(uname)
+  let email=req.query.email;
+  console.log(email)
+  let upwd=req.query.upwd;
+  console.log(upwd);
+  // 测试
+  // output.code=200;
+  // output.msg="登陆成功";
+  // res.send(output);
+
+
+  // 验证是否填写用户名或邮箱
+  
+  // if(!uname && !upwd){
+  //   output.code=401;
+  //   output.msg='uname or email required';
+  //   console.log(output);
+  //   res.send(output);
+  //   return;
+  // }
+
+  // if(!upwd){
+  //   output.code=402;
+  //   output.msg='upwd required';
+  //   console.log(output);
+  //   res.send(output);
+  //   return;
+  // }
+  let sql='SELECT * FROM user WHERE upwd=?';
+  pool.query(sql,[upwd],(err,result)=>{
+    console.log("连接数据库");
+    if(err){
+      next (err)
+      console.log(err);
+    };
+    if(result.length>0){
+      console.log("查到数据")
+      output.code=200;
+      output.msg='login success';
+      output.data=result;
+      console.log(output);
+      res.send(output)
+    }
+  })
 })
